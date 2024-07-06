@@ -55,14 +55,18 @@ internal class Program
     {
         byte[] data = { 0x06, 0x12 };
         byte[] responseBuffer = new byte[8];
+        int previousBattery = 0;
         while (true)
         {
+            
             await stream.WriteAsync(data);
             int bytesRead = await stream.ReadAsync(responseBuffer);
             string hexOfBytes = string.Join(" ", responseBuffer.Take(bytesRead).Select(b => b.ToString("X2")));
             string[] hexOfBytesArray = hexOfBytes.Split(" ");
             DeviceStatus status = Convert.ToInt32(hexOfBytesArray[2], 16) == 3 ? DeviceStatus.Online : DeviceStatus.Offline;
             int battery = Convert.ToInt32(hexOfBytesArray[3], 16);
+            if(previousBattery == battery) continue;
+            previousBattery = battery;
             if(battery > 100) battery = 100;
             Console.Clear();
             Console.WriteLine("============== ARCTIS BATTERY MONITOR =============");
