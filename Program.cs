@@ -63,6 +63,7 @@ internal class Program
             string[] hexOfBytesArray = hexOfBytes.Split(" ");
             DeviceStatus status = Convert.ToInt32(hexOfBytesArray[2], 16) == 3 ? DeviceStatus.Online : DeviceStatus.Offline;
             int battery = Convert.ToInt32(hexOfBytesArray[3], 16);
+            if(battery > 100) battery = 100;
             Console.Clear();
             Console.WriteLine("============== ARCTIS BATTERY MONITOR =============");
 #if DEBUG
@@ -70,7 +71,7 @@ internal class Program
 #else
             Console.WriteLine($"Device: {arctis.GetFriendlyName()}\nStatus: {status}\nBattery: {battery}%");
 #endif
-            await Task.Delay(5000);
+            await Task.Delay(1000);
         }
     }
 }
